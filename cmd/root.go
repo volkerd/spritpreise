@@ -3,20 +3,11 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/volkerd/spritpreise/pkg/common"
 	"log"
-	"time"
+	"math"
 )
 
 var rootCmd *cobra.Command
-
-func Last[E any](s []E) E {
-	if len(s) == 0 {
-		var zero E
-		return zero
-	}
-	return s[len(s)-1]
-}
 
 func init() {
 	rootCmd = &cobra.Command{
@@ -28,7 +19,18 @@ func init() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			_, _ = getFileList(dateFlag)
+			pairs := getPairs(dateFlag)
+			var stationMin = math.MaxInt32
+			var stationMax int
+			var priceSum int
+			for _, pair := range pairs {
+				stationCount, priceCount := processPair(pair)
+				stationMin = minimum(stationMin, stationCount)
+				stationMax = maximum(stationMax, stationCount)
+				priceSum += priceCount
+			}
+			fmt.Printf("%d prices found\n", priceSum)
+			fmt.Printf("%d to %d stations found\n", stationMin, stationMax)
 		},
 	}
 	rootCmd.PersistentFlags().StringP("nach", "s", "2025-03-01", "Erster Tag")
@@ -40,20 +42,4 @@ func Exec() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func getFileList(dateFlag string) (stationFileList []File, priceFileList []File) {
-	afterDate, err := time.Parse("2006-01-02", dateFlag)
-	if err != nil {
-		log.Fatal(err)
-	}
-	stations := stationFiles(afterDate)
-	fmt.Printf("%v stations found, start %v, end %v\n", len(stations), stations[0], Last(stations))
-	prices := priceFiles(afterDate)
-	fmt.Printf("%v prices found, start %v, end %v\n", len(prices), prices[0], Last(prices))
-	cutOffDate, _ := time.Parse("2006-01-02", common.CUT_OFF_DATE)
-	if afterDate.After(cutOffDate) && len(stations) != len(prices) {
-		log.Fatalf("number of stations (%v) must be equal to number of prices (%v)", len(stations), len(prices))
-	}
-	return stations, prices
 }
