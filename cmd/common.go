@@ -45,24 +45,21 @@ type Price struct {
 }
 
 const (
-	BASE_PATH       = "/Users/volkerdemel/work/tanken/tankerkoenig-data"
-	STATION_PATH    = "stations"
-	PRICE_PATH      = "prices"
-	CUT_OFF_DATE    = "2019-01-23"
-	STATION         = "station"
-	PRICE           = "price"
-	INFLUXDB_BUCKET = "spritpreise"
-	INFLUXDB_ORG    = "demelnet"
-	INFLUXDB_TOKEN  = "FUzVuYQyM1OLGndyN9mxwIRmphWu53pgOhDCFbB_f9rJ7IL9RKI3mv9ftFBaPnIzAm5Tpjk5vUsKqo0-fLhlzg=="
-	INFLUXDB_URL    = "http://nass:8086"
+	STATION_PATH = "stations"
+	PRICE_PATH   = "prices"
+	CUT_OFF_DATE = "2019-01-23"
+	STATION      = "station"
+	PRICE        = "price"
 )
 
-var zipcodeFilter map[string]bool
-var basePath string
-var influxdbBucket string
-var influxdbOrg string
-var influxdbToken string
-var influxdbUrl string
+var (
+	zipcodeFilter  map[string]bool
+	basePath       string
+	influxdbBucket string
+	influxdbOrg    string
+	influxdbToken  string
+	influxdbUrl    string
+)
 
 func First[E any](s []E) E {
 	if len(s) == 0 {
