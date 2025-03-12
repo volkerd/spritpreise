@@ -23,9 +23,9 @@ func getFileList(dateFlag string) (stationFileList []File, priceFileList []File)
 		log.Fatal(err)
 	}
 	stations := stationFiles(dateFlag)
-	fmt.Printf("%v stations found, start %v, end %v\n", len(stations), stations[0], Last(stations))
+	fmt.Printf("%v stations found, start %v, end %v\n", len(stations), First(stations), Last(stations))
 	prices := priceFiles(dateFlag)
-	fmt.Printf("%v prices found, start %v, end %v\n", len(prices), prices[0], Last(prices))
+	fmt.Printf("%v prices found, start %v, end %v\n", len(prices), First(prices), Last(prices))
 	if dateFlag > CUT_OFF_DATE && len(stations) != len(prices) {
 		log.Fatalf("number of stations (%v) must be equal to number of prices (%v)", len(stations), len(prices))
 	}
@@ -40,13 +40,14 @@ func priceFiles(afterDate string) (paths []File) {
 	return traversFS(afterDate, PRICE, PRICE_PATH)
 }
 
-func traversFS(afterDate string, dataType string, root string) (paths []File) {
+func traversFS(afterDate string, dataType string, root string) []File {
 	fmt.Printf("TraversFS(%v,%v,%v)\n", afterDate, dataType, root)
 	r, err := regexp.Compile("([0-9]{4}-[0-9]{2}-[0-9]{2})-([a-z]*)\\.")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fsys := os.DirFS(BASE_PATH)
+	paths := []File{}
 	err = fs.WalkDir(fsys, root, func(path string, d fs.DirEntry, err error) error {
 		if filepath.Ext(path) == ".csv" {
 			var date string
@@ -100,7 +101,7 @@ func mergeFileLists(stationFileList []File, priceFileList []File) (pairList []Fi
 		pair := FilePair{station: station, price: price}
 		pairList = append(pairList, pair)
 	}
-	fmt.Printf("%v pairs found, start %v, end %v\n", len(pairList), pairList[0], Last(pairList))
+	fmt.Printf("%v pairs found, start %v, end %v\n", len(pairList), First(pairList), Last(pairList))
 
 	return pairList
 }

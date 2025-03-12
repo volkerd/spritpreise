@@ -47,7 +47,7 @@ const (
 	CUT_OFF_DATE    = "2019-01-23"
 	STATION         = "station"
 	PRICE           = "price"
-	INFLUXDB_BUCKET = "spritpreise"
+	INFLUXDB_BUCKET = "spritpreise_test"
 	INFLUXDB_ORG    = "demelnet"
 	INFLUXDB_TOKEN  = "FUzVuYQyM1OLGndyN9mxwIRmphWu53pgOhDCFbB_f9rJ7IL9RKI3mv9ftFBaPnIzAm5Tpjk5vUsKqo0-fLhlzg=="
 	// Store the URL of your InfluxDB instance
@@ -55,6 +55,14 @@ const (
 )
 
 var zipcodeFilter map[string]bool
+
+func First[E any](s []E) E {
+	if len(s) == 0 {
+		var zero E
+		return zero
+	}
+	return s[0]
+}
 
 func Last[E any](s []E) E {
 	if len(s) == 0 {
