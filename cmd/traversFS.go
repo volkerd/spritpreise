@@ -46,7 +46,7 @@ func traversFS(afterDate string, dataType string, root string) []File {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fsys := os.DirFS(BASE_PATH)
+	fsys := os.DirFS(basePath)
 	paths := []File{}
 	err = fs.WalkDir(fsys, root, func(path string, d fs.DirEntry, err error) error {
 		if filepath.Ext(path) == ".csv" {
@@ -58,7 +58,7 @@ func traversFS(afterDate string, dataType string, root string) []File {
 				date = CUT_OFF_DATE
 			}
 			if date > afterDate {
-				absPath := filepath.Join(BASE_PATH, path)
+				absPath := filepath.Join(basePath, path)
 				if err != nil {
 					log.Fatal(err)
 				}

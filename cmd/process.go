@@ -11,10 +11,10 @@ import (
 )
 
 func processAll(dateFlag string) {
-	client := influxdb2.NewClient(INFLUXDB_URL, INFLUXDB_TOKEN)
+	client := influxdb2.NewClient(influxdbUrl, influxdbToken)
 	defer client.Close()
-	queryAPI := client.QueryAPI(INFLUXDB_ORG)
-	writeAPI := client.WriteAPI(INFLUXDB_ORG, INFLUXDB_BUCKET)
+	queryAPI := client.QueryAPI(influxdbOrg)
+	writeAPI := client.WriteAPI(influxdbOrg, influxdbBucket)
 	defer writeAPI.Flush()
 
 	if dateFlag == "" {
@@ -42,7 +42,7 @@ func findLatestEntry(queryAPI api.QueryAPI) string {
 		`from(bucket:"%s")
 		|> range(start: -%dd)
 		|> last()`,
-		INFLUXDB_BUCKET, DAYS_BACK)
+		influxdbBucket, DAYS_BACK)
 	result, err := queryAPI.Query(context.Background(), fluxQuery)
 	if err != nil {
 		log.Fatalf("Error querying influxdb: %v", err)
